@@ -21,11 +21,7 @@ replace_columns(){
 	echo ${after[@]}
 	n=${#before[@]}
 	echo $n
-#	head -1 file |
 	for ((i=0; i<n; i++)); do
-#		sed_opts+=( "-E s/^${before[$i]}\s/^${after[$i]}\s/g" )
-#		sed_opts+=( "-E s/\s${before[$i]}\s/\s${after[$i]}\s/g" )
-#		sed_opts+=( "-E s/\s${before[$i]}\$/\s${after[$i]}\$/g" )
 		sed_opts+=( "-e s/^${before[$i]}\(\s.*\)/${after[$i]}\1/g" )
 		sed_opts+=( "-e s/\(.*\s\)${before[$i]}\(\s.*\)/\1${after[$i]}\2/g" )
 		sed_opts+=( "-e s/\(.*\s\)${before[$i]}\$/\1${after[$i]}/g" )
@@ -48,9 +44,6 @@ declare -A before_after=(
 	[before2]=after2
 	[before3]=after3
 )
-
-#echo ${!before_after[@]}
-#echo ${before_after[@]}
 
 replace_columns "${!before_after[*]}" "${before_after[*]}" test.txt
 
