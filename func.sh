@@ -19,7 +19,7 @@ replace_columns(){
 	local after=($(echo $2))
 	local file=$3
 	local sed_opts=()
-	n=${#before[@]}
+	local n=${#before[@]}
 	for ((i=0; i<n; i++)); do
 		sed_opts+=( "-e 1s/^${before[$i]}\(\s\)/${after[$i]}\1/g" )
 		sed_opts+=( "-e 1s/\(\s\)${before[$i]}\(\s\)/\1${after[$i]}\2/g" )
