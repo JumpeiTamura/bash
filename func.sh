@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o xtrace
+
 #配列を受け取って区切り文字を変更し、結果の文字列を返す関数
 
 change_format(){
@@ -19,13 +21,11 @@ replace_columns(){
 	local sed_opts=()
 	n=${#before[@]}
 	for ((i=0; i<n; i++)); do
-		sed_opts+=( "-e s/^${before[$i]}\(\s.*\)/${after[$i]}\1/g" )
-		sed_opts+=( "-e s/\(.*\s\)${before[$i]}\(\s.*\)/\1${after[$i]}\2/g" )
-		sed_opts+=( "-e s/\(.*\s\)${before[$i]}\$/\1${after[$i]}/g" )
+		sed_opts+=( "-e 1s/^${before[$i]}\(\s\)/${after[$i]}\1/g" )
+		sed_opts+=( "-e 1s/\(\s\)${before[$i]}\(\s\)/\1${after[$i]}\2/g" )
+		sed_opts+=( "-e 1s/\(\s\)${before[$i]}\$/\1${after[$i]}/g" )
 	done
-	head -1 $file |
-	sed ${sed_opts[@]}
-	tail -n +2 $file
+	sed ${sed_opts[@]} $file
 }
 
 
