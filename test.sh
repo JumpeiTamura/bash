@@ -17,17 +17,12 @@ replace_columns(){
 	local after=($(echo $2))
 	local file=$3
 	local sed_opts=()
-	echo ${before[@]}
-	echo ${after[@]}
 	n=${#before[@]}
-	echo $n
 	for ((i=0; i<n; i++)); do
 		sed_opts+=( "-e s/^${before[$i]}\(\s.*\)/${after[$i]}\1/g" )
 		sed_opts+=( "-e s/\(.*\s\)${before[$i]}\(\s.*\)/\1${after[$i]}\2/g" )
 		sed_opts+=( "-e s/\(.*\s\)${before[$i]}\$/\1${after[$i]}/g" )
 	done
-	echo "${sed_opts[@]}"
-	echo "${#sed_opts[@]}"
 	head -1 $file |
 	sed ${sed_opts[@]}
 	tail -n +2 $file
