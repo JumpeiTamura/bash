@@ -1,0 +1,20 @@
+2018年  7月 18日 水曜日 22:07:38 JST
+hello
+error.txt
+file1
+file2
+file3
+file4
+file5
+folder1
+folder2
+folder3
+hello.sh
+hello.txt
+murakami
+result.txt
+takuma
+tamura
+test.sh
+test.txt
+test2.sh
