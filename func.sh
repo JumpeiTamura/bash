@@ -1,6 +1,8 @@
 #!/bin/bash
 
-set -o xtrace
+source ./ish.sh
+
+#set -o xtrace
 
 #配列を受け取って区切り文字を変更し、結果の文字列を返す関数
 
@@ -28,6 +30,8 @@ replace_columns(){
 	sed ${sed_opts[@]} $file
 }
 
+#対話的シェルを埋め込む関数
+
 
 #サンプルプログラム
 
@@ -42,9 +46,7 @@ declare -A before_after=(
 
 replace_columns "${!before_after[*]}" "${before_after[*]}" test.txt
 
-
-
-
+ish
 
 
 
