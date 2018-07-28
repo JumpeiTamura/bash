@@ -47,7 +47,7 @@ ish(){
 		elif [[ $script =~ ^hc$ ]]; then
 			: > ish.hist
 			echo "History cleared."
-			printf "\n\n> "
+			printf "\n> "
 			continue
 		fi
                 [[ $script =~ ^exit ]] && echo bye

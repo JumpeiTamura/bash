@@ -1,4 +1,0 @@
-echo hello
-echo "hello world"
-source ./ish.sh
-echo "hello world"

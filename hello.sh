@@ -8,4 +8,6 @@ echo $?
 
 ish
 
+echo end of file
+
 exit 0
