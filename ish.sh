@@ -29,7 +29,7 @@ print_with_lineno(){
 
 #対話的シェルを埋め込む関数
 ish(){
-	file=$0
+	local file=$0
 	if [ "$1" != "-n" ]; then
 		print_with_lineno $file script
 	fi
@@ -44,6 +44,11 @@ ish(){
 			continue
 		elif [[ $script =~ ^h[0-9]+$ ]]; then
 			get_line ish.hist ${script:1}
+		elif [[ $script =~ ^hc$ ]]; then
+			: > ish.hist
+			echo "History cleared."
+			printf "\n\n> "
+			continue
 		fi
                 [[ $script =~ ^exit ]] && echo bye
                 eval $script

@@ -1,12 +1,4 @@
+echo hello
 echo "hello world"
-echo "hello world"
-echo "hello world"
-
-
-:
-:
-
-echo "hello world"
-echo "hello world"
-echo "hello world"
+source ./ish.sh
 echo "hello world"
