@@ -1,133 +1,65 @@
-#!/bin/bash -xv
+#!/bin/bash
 
-#begin help
-#
-# File name: awk.sh
-#
-# Written by Jumpei Tamura
-#
-# This is a file that tests awk script.
-#
-#end help
+tmp=$(basename $0 .sh)
 
-source ./ish.sh
+# 行と列の合計を出す関数
+function pivot() {
+	while getopts :rlh OPT; do
+    case $OPT in
+        r)  sum_col=r
+            ;;
+        l)  sum_col=l
+            ;;
+        h)  echo "usage: pivot (option) (filename) (number of rows)"
+						return 0
+            ;;
+        \?) echo "無効なオプションです"
+						return 1
+            ;;
+    esac
+	done
+	shift $((OPTIND - 1))
 
-
-cat test.txt |
-
-awk '/^b/{print "bから始まる行："$0}'
-
-cat test.txt |
-
-awk '$2 ~ /^b/{print "2フィールド目がbから始まる行："$0}'
-
-cat test.txt |
-
-awk '{print NR"行目："$0}'
-
-cat test.txt |
-
-awk 'NR==2{print "2行目の1フィールド目："$1}'
-
-
-printf "何行目を読み込みますか？"
-
-read n
-
-cat test.txt |
-
-awk --assign n=$n '
-	NR==n{print $0}
-'
-
-#printf "正規表現："
-
-#read regexp
-
-cat test.txt |
-
-awk '
-#	{print "'"$regexp"'"}
-#	match($0, "'"$regexp"'"){print $0}
-'
-
-ls -l | awk '{print $1,$9}'
-
-ls -l | awk '
-	BEGIN{printf "実行権限があるファイル：\n"}
-	$1 ~ /^[^d].*x/ {print $9}
-'
-
-cat test.txt |
-
-awk '
-	BEGIN{printf "3フィールド目が数字で終わる行：\n"}
-	$3 ~ /[0-9]$/ {print $0}
-'
-
-ls -l | awk '
-	BEGIN{printf "書き込み権限があるシェルスクリプト以外のファイル：\n"}
-	$1 ~ /^[^d].*w/ \
-	&& !($9 ~ /.sh$/) {print $0}
-'
-
-echo $1
-
-[ "$1" = "-h" ] && cat $0 |
-awk '
-	/^#begin help/,/^#end help/ {print $0}
-'
-
-cat test.txt |
-awk '
-	BEGIN{print "これから行数を数えるお。"; i=0}
-	{print $0; i++}
-	END{print "全部で" i "行だったお。"}
-'
-
-cat test.txt |
-awk '
-	BEGIN{print "カンマ区切りだと区切り文字で区切って出力\n"}
-	{print $1,$2,$3}
-'
-
-cat test.txt |
-awk '
-	BEGIN{print "スペース区切りだと文字列連結\n"}
-	{print $1 $2 $3}
-'
-
-cat test.txt |
-awk '
-	BEGIN{OFS=";"; print "区切り文字変更"}
-	{print $1,$2,$3}
-'
-
-cat test.txt |
-awk '
-	BEGIN{sum=0}
-	{sum+=length($0)}
-	END{print "全文字数：" sum}
-'
-
-cat test.txt |
-awk '
+	file=$1
+	cols=$2
+	cat $file |
+	# 行番号と列番号を削除
+	awk 'NR!=1{$1=""; print $0}' |
+	# 行と列の合計を出す
+	awk '
+	BEGIN{for(i=1;i<='$cols'+1;i++){a[i]=0}}
 	{
-		split($0,a)
-		for(i in a){
-			array[NR,i]=a[i]
+		for(i=1;i<='$cols';i++){
+			if(i==1){sum=0}
+			if($i!="_"){
+				sum+=$i
+				a[i]+=$i
+			}
 		}
+		a['$cols'+1]+=sum
+		print $0,sum
 	}
-	END{
-		for(i in array){
-			print i,array[i]
-		}
-	}
-'
+	END{for(i=1;i<='$cols'+1;i++){printf "%d ",a[i]} print ""}' > $tmp-pivot
+	if [ ${sum_col:-r} = r ]; then
+		cat $tmp-pivot
+	else
+		# 左指定の場合は集計列を１列目に表示
+		cat $tmp-pivot |
+		awk '
+		BEGIN{n='$cols'+1}
+		{
+			for(i=1;i<=n;i++){
+				if(i==1){
+					printf "%s ",$n
+				}else{
+					j=i-1
+					printf "%s ", $j
+				}
+			}
+			print ""
+		}'
+	fi
+}
 
-
-
-
-
-
-
+pivot -l mtrx 10
+exit 0
